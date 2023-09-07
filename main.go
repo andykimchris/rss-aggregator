@@ -21,9 +21,18 @@ func main() {
 	if portStr == "" {
 		log.Fatal("PORT is not set")
 	}
+
 	fmt.Println("Server is running on port:", portStr)
 
 	router := chi.NewRouter()
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"https://*", "http://*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
 
 	server := &http.Server{
 		Handler: router,
